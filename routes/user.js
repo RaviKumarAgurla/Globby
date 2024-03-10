@@ -13,7 +13,6 @@ router.get('/signin', (req, res) => {
 })
 
 router.post('/signup', async (req, res) => {
-    console.log(req)
     var {fullName, email, password} = req.body
     var result = await User.create({
         fullName,
@@ -26,9 +25,20 @@ router.post('/signup', async (req, res) => {
 router.post('/signin', async (req, res) => {
     const {email, password} = req.body
     console.log(email, password)
-    var user = await User.matchPassword(email, password)
-    console.log(user)
-    res.redirect('/')
+    try {
+        var token = await User.matchPasswordGenerateToken(email, password)
+        return res.cookie('token', token).redirect('/')
+    }catch(e) {
+        console.log(e)
+        return res.render('signin',{
+            error: 'user not found'
+        })
+    }
+    
+})
+
+router.get('/logout', (req, res) => {
+    return res.clearCookie('token').render('signin')
 })
 
 
