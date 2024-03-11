@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 var express = require('express')
 var path = require('path')
 var mongoose = require('mongoose')
@@ -13,9 +15,9 @@ var blogRouter = require('./routes/blog')
 var Comment = require('./models/comment')
 
 var app = express();
-var PORT = 8000
+var PORT = process.env.PORT || 8000
 
-mongoose.connect('mongodb://localhost:27017/Globby').then(console.log('mongoDB is connected'))
+mongoose.connect(process.env.MONGO_URL).then(console.log('mongoDB is connected'))
 
 app.use(express.urlencoded({extended: false}))
 app.use(cookieParser())
